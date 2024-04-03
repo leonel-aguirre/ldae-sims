@@ -7,13 +7,10 @@ use axum::{
     Router,
 };
 use dotenv::dotenv;
+use ldae_sims::{handler::degrees_handler, shared::AppState};
 use serde::Deserialize;
 use sqlx::{postgres::PgPoolOptions, Pool, Postgres};
 use tower_http::services::ServeDir;
-
-pub struct AppState {
-    db: Pool<Postgres>,
-}
 
 #[tokio::main]
 async fn main() {
@@ -55,6 +52,7 @@ fn routes_hello() -> Router<Arc<AppState>> {
     Router::new()
         .route("/hello", get(handler_hello))
         .route("/hello2/:name", get(handler_hello2))
+        .route("/degrees", get(degrees_handler))
 }
 
 #[derive(Debug, Deserialize)]
