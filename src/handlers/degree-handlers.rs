@@ -124,7 +124,7 @@ pub async fn edit_degree_by_id_handler(
     if query_result.is_err() {
         let error_response = serde_json::json!({
             "status": "fail",
-            "message": format!("Degree with ID: {} not found", id)
+            "message": format!("Degree with ID: {} not found.", id)
         });
         return Err((StatusCode::NOT_FOUND, Json(error_response)));
     }
@@ -153,4 +153,32 @@ pub async fn edit_degree_by_id_handler(
             ));
         }
     }
+}
+
+// DELETE
+#[debug_handler]
+pub async fn delete_degree_handler(
+    Path(id): Path<i32>,
+    State(data): State<Arc<AppState>>,
+) -> Result<impl IntoResponse, (StatusCode, Json<serde_json::Value>)> {
+    let rows_affected = sqlx::query!("DELETE FROM degrees WHERE id = $1", id)
+        .execute(&data.db)
+        .await
+        .unwrap()
+        .rows_affected();
+
+    if rows_affected == 0 {
+        let error_response = serde_json::json!({
+            "status": "fail",
+            "message": format!("Degree with ID: {} not found.", id)
+        });
+        return Err((StatusCode::NOT_FOUND, Json(error_response)));
+    }
+
+    let json_response = serde_json::json!({
+        "status": "success",
+        "message": format!("Degree with ID: {} successfuly deleted.", id)
+    });
+
+    Ok(Json(json_response))
 }

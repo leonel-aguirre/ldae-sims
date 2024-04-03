@@ -1,7 +1,7 @@
 use crate::{
     degree_handlers::{
-        create_degree_handler, edit_degree_by_id_handler, select_all_degrees_handler,
-        select_degree_by_id_handler,
+        create_degree_handler, delete_degree_handler, edit_degree_by_id_handler,
+        select_all_degrees_handler, select_degree_by_id_handler,
     },
     shared::AppState,
 };
@@ -17,6 +17,8 @@ pub fn degree_routes() -> Router<Arc<AppState>> {
         .route("/degree", post(create_degree_handler))
         .route(
             "/degree/:id",
-            get(select_degree_by_id_handler).patch(edit_degree_by_id_handler),
+            get(select_degree_by_id_handler)
+                .patch(edit_degree_by_id_handler)
+                .delete(delete_degree_handler),
         )
 }
