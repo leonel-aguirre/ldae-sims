@@ -6,11 +6,4 @@ use sqlx::FromRow;
 pub struct DegreeModel {
     pub id: i32,
     pub name: String,
-    // pub content: String,
-    // pub category: Option<String>,
-    // pub published: Option<bool>,
-    // #[serde(rename = "createdAt")]
-    // pub created_at: Option<chrono::DateTime<chrono::Utc>>,
-    // #[serde(rename = "updatedAt")]
-    // pub updated_at: Option<chrono::DateTime<chrono::Utc>>,
 }
