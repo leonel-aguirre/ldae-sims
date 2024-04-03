@@ -9,3 +9,8 @@ pub struct ParamOptions {
 pub struct CreateDegreeSchema {
     pub name: String,
 }
+
+#[derive(Serialize, Deserialize, Debug)]
+pub struct UpdateDegreeSchema {
+    pub name: String,
+}
