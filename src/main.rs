@@ -7,7 +7,10 @@ use axum::{
     Router,
 };
 use dotenv::dotenv;
-use ldae_sims::{handler::degrees_handler, shared::AppState};
+use ldae_sims::{
+    handler::{degrees_handler, select_degree_by_id_handler},
+    shared::AppState,
+};
 use serde::Deserialize;
 use sqlx::{postgres::PgPoolOptions, Pool, Postgres};
 use tower_http::services::ServeDir;
@@ -52,7 +55,8 @@ fn routes_hello() -> Router<Arc<AppState>> {
     Router::new()
         .route("/hello", get(handler_hello))
         .route("/hello2/:name", get(handler_hello2))
-        .route("/degrees", get(degrees_handler))
+        // .route("/degrees", get(degrees_handler))
+        .route("/degrees", get(select_degree_by_id_handler))
 }
 
 #[derive(Debug, Deserialize)]
