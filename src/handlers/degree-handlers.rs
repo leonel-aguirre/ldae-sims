@@ -9,8 +9,8 @@ use axum::{
 use serde_json::json;
 
 use crate::{
-    model::DegreeModel,
-    schema::{CreateDegreeSchema, ParamOptions, SelectDegreeSchema},
+    degree_model::DegreeModel,
+    degree_schemas::{CreateDegreeSchema, ParamOptions, SelectDegreeSchema},
     shared::AppState,
 };
 
