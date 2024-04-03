@@ -1,34 +1,57 @@
+use std::sync::Arc;
+
 use axum::{
     extract::{Path, Query},
     response::{Html, IntoResponse},
     routing::{get, get_service},
     Router,
 };
+use dotenv::dotenv;
 use serde::Deserialize;
+use sqlx::{postgres::PgPoolOptions, Pool, Postgres};
 use tower_http::services::ServeDir;
+
+pub struct AppState {
+    db: Pool<Postgres>,
+}
 
 #[tokio::main]
 async fn main() {
-    let routes_all = Router::new()
-        .merge(routes_hello())
-        .fallback_service(routes_static());
+    dotenv().ok();
 
-    // region: -- Start Server
+    let database_url = std::env::var("DATABASE_URL").expect("DATABASE_URL must be set");
 
-    let listener = tokio::net::TcpListener::bind("0.0.0.0:3000").await.unwrap();
-
-    axum::serve(listener, routes_all.into_make_service())
+    let pool = match PgPoolOptions::new()
+        .max_connections(10)
+        .connect(&database_url)
         .await
-        .unwrap();
+    {
+        Ok(pool) => {
+            println!("✅Connection to the database is successful!");
+            pool
+        }
+        Err(err) => {
+            println!("🔥 Failed to connect to the database: {:?}", err);
+            std::process::exit(1);
+        }
+    };
 
-    // endregion: -- Start Server
+    let app_state = Arc::new(AppState { db: pool.clone() });
+
+    let routes_all = Router::new()
+        .nest("/api", routes_hello().merge(routes_static()))
+        .with_state(app_state);
+
+    println!("🚀 Server started successfully");
+    let listener = tokio::net::TcpListener::bind("0.0.0.0:3000").await.unwrap();
+    axum::serve(listener, routes_all).await.unwrap();
 }
 
-fn routes_static() -> Router {
+fn routes_static() -> Router<Arc<AppState>> {
     Router::new().nest_service("/", get_service(ServeDir::new("./")))
 }
 
-fn routes_hello() -> Router {
+fn routes_hello() -> Router<Arc<AppState>> {
     Router::new()
         .route("/hello", get(handler_hello))
         .route("/hello2/:name", get(handler_hello2))
