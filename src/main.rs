@@ -1,53 +1,38 @@
-use axum::{
-    extract::{Path, Query},
-    response::{Html, IntoResponse},
-    routing::{get, get_service},
-    Router,
-};
-use serde::Deserialize;
-use tower_http::services::ServeDir;
+use std::sync::Arc;
+
+use axum::Router;
+use dotenv::dotenv;
+use ldae_sims::{degree_routes::degree_routes, shared::AppState};
+use sqlx::postgres::PgPoolOptions;
 
 #[tokio::main]
 async fn main() {
-    let routes_all = Router::new()
-        .merge(routes_hello())
-        .fallback_service(routes_static());
+    dotenv().ok();
 
-    // region: -- Start Server
+    let database_url = std::env::var("DATABASE_URL").expect("DATABASE_URL must be set");
 
-    let listener = tokio::net::TcpListener::bind("0.0.0.0:3000").await.unwrap();
-
-    axum::serve(listener, routes_all.into_make_service())
+    let pool = match PgPoolOptions::new()
+        .max_connections(10)
+        .connect(&database_url)
         .await
-        .unwrap();
+    {
+        Ok(pool) => {
+            println!("✅ Connection to the database is successful!");
+            pool
+        }
+        Err(err) => {
+            println!("🔥 Failed to connect to the database: {:?}", err);
+            std::process::exit(1);
+        }
+    };
 
-    // endregion: -- Start Server
-}
+    let app_state = Arc::new(AppState { db: pool.clone() });
 
-fn routes_static() -> Router {
-    Router::new().nest_service("/", get_service(ServeDir::new("./")))
-}
+    let all_routes = degree_routes();
 
-fn routes_hello() -> Router {
-    Router::new()
-        .route("/hello", get(handler_hello))
-        .route("/hello2/:name", get(handler_hello2))
-}
+    let router = Router::new().nest("/api", all_routes).with_state(app_state);
 
-#[derive(Debug, Deserialize)]
-struct HelloParams {
-    name: Option<String>,
-}
-
-async fn handler_hello(Query(params): Query<HelloParams>) -> impl IntoResponse {
-    println!("->> {:<12} - handler_hello - {params:?}", "HANDLER");
-
-    let name = params.name.as_deref().unwrap_or("World!");
-    return Html(format!("Hello <strong>{name}</strong>"));
-}
-
-async fn handler_hello2(Path(name): Path<String>) -> impl IntoResponse {
-    println!("->> {:<12} - handler_hello2 - {name:?}", "HANDLER");
-
-    return Html(format!("Hello <strong>{name}</strong>"));
+    println!("🚀 Server started successfully");
+    let listener = tokio::net::TcpListener::bind("0.0.0.0:3000").await.unwrap();
+    axum::serve(listener, router).await.unwrap();
 }
