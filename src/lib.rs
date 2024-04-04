@@ -1,13 +1,13 @@
 pub mod shared;
 
-#[path = "./schemas/degree-schemas.rs"]
-pub mod degree_schemas;
+#[path = "./schemas/program-schemas.rs"]
+pub mod program_schemas;
 
-#[path = "./models/degree-model.rs"]
-pub mod degree_model;
+#[path = "./models/program-model.rs"]
+pub mod program_model;
 
-#[path = "./handlers/degree-handlers.rs"]
-pub mod degree_handlers;
+#[path = "./handlers/program-handlers.rs"]
+pub mod program_handlers;
 
-#[path = "./routes/degree-routes.rs"]
-pub mod degree_routes;
+#[path = "./routes/program-routes.rs"]
+pub mod program_routes;
