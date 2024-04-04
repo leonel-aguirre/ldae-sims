@@ -70,37 +70,69 @@ pub async fn select_course_by_code_handler(
     Ok(Json(json_response))
 }
 
-// // GET
-// #[debug_handler]
-// pub async fn select_specialization_by_program_handler(
-//     Path(program_code): Path<String>,
-//     State(data): State<Arc<AppState>>,
-// ) -> Result<impl IntoResponse, (StatusCode, Json<serde_json::Value>)> {
-//     let query_result = sqlx::query_as!(
-//         SpecializationModel,
-//         "SELECT * FROM specializations WHERE program_code = $1",
-//         program_code,
-//     )
-//     .fetch_all(&data.db)
-//     .await;
+// GET
+#[debug_handler]
+pub async fn select_course_by_program_handler(
+    Path(program_code): Path<String>,
+    State(data): State<Arc<AppState>>,
+) -> Result<impl IntoResponse, (StatusCode, Json<serde_json::Value>)> {
+    let query_result = sqlx::query_as!(
+        CourseModel,
+        "SELECT * FROM courses WHERE program_code = $1",
+        program_code,
+    )
+    .fetch_all(&data.db)
+    .await;
 
-//     if query_result.is_err() {
-//         let error_response = serde_json::json!({
-//             "status": "fail",
-//             "message": "Error while fetching specialization by program with code: {program_code}.",
-//         });
-//         return Err((StatusCode::INTERNAL_SERVER_ERROR, Json(error_response)));
-//     }
+    if query_result.is_err() {
+        let error_response = serde_json::json!({
+            "status": "fail",
+            "message": "Error while fetching course by program with code: {program_code}.",
+        });
+        return Err((StatusCode::INTERNAL_SERVER_ERROR, Json(error_response)));
+    }
 
-//     let specializations = query_result.unwrap();
+    let courses = query_result.unwrap();
 
-//     let json_response = serde_json::json!({
-//         "status": "success",
-//         "data": {"specializations": specializations}
-//     });
+    let json_response = serde_json::json!({
+        "status": "success",
+        "data": {"courses": courses}
+    });
 
-//     Ok(Json(json_response))
-// }
+    Ok(Json(json_response))
+}
+
+// GET
+#[debug_handler]
+pub async fn select_course_by_specialization_handler(
+    Path(specialization_code): Path<String>,
+    State(data): State<Arc<AppState>>,
+) -> Result<impl IntoResponse, (StatusCode, Json<serde_json::Value>)> {
+    let query_result = sqlx::query_as!(
+        CourseModel,
+        "SELECT * FROM courses WHERE specialization_code = $1",
+        specialization_code,
+    )
+    .fetch_all(&data.db)
+    .await;
+
+    if query_result.is_err() {
+        let error_response = serde_json::json!({
+            "status": "fail",
+            "message": "Error while fetching course by specialization with code: {specialization_code}.",
+        });
+        return Err((StatusCode::INTERNAL_SERVER_ERROR, Json(error_response)));
+    }
+
+    let courses = query_result.unwrap();
+
+    let json_response = serde_json::json!({
+        "status": "success",
+        "data": {"courses": courses}
+    });
+
+    Ok(Json(json_response))
+}
 
 // POST
 #[debug_handler]
