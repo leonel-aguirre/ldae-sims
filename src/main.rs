@@ -2,7 +2,9 @@ use std::sync::Arc;
 
 use axum::Router;
 use dotenv::dotenv;
-use ldae_sims::{program_routes::program_routes, shared::AppState};
+use ldae_sims::{
+    program_routes::program_routes, shared::AppState, specialization_routes::specialization_routes,
+};
 use sqlx::postgres::PgPoolOptions;
 
 #[tokio::main]
@@ -28,7 +30,7 @@ async fn main() {
 
     let app_state = Arc::new(AppState { db: pool.clone() });
 
-    let all_routes = program_routes();
+    let all_routes = program_routes().merge(specialization_routes());
 
     let router = Router::new().nest("/api", all_routes).with_state(app_state);
 
