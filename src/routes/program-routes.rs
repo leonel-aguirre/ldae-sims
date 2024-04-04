@@ -16,7 +16,7 @@ pub fn program_routes() -> Router<Arc<AppState>> {
         .route("/programs", get(select_all_programs_handler))
         .route("/program", post(create_program_handler))
         .route(
-            "/program/:id",
+            "/program/:program_code",
             get(select_program_by_code_handler)
                 .patch(edit_program_by_code_handler)
                 .delete(delete_program_by_code_handler),
