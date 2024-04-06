@@ -1,0 +1,40 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "SELECT * FROM courses WHERE specialization_code = $1",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "course_code",
+        "type_info": "Varchar"
+      },
+      {
+        "ordinal": 1,
+        "name": "display_name",
+        "type_info": "Varchar"
+      },
+      {
+        "ordinal": 2,
+        "name": "program_code",
+        "type_info": "Varchar"
+      },
+      {
+        "ordinal": 3,
+        "name": "specialization_code",
+        "type_info": "Varchar"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Text"
+      ]
+    },
+    "nullable": [
+      false,
+      false,
+      false,
+      true
+    ]
+  },
+  "hash": "ea3d8b5f9443b3ebb116e8b1cdd0235782c039833c9689e3a325e2813642b45b"
+}

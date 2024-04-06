@@ -1,0 +1,14 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "DELETE FROM specializations WHERE specialization_code = $1",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Text"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "86de5cf84dcb429bc04352aa24297a88be4d63a43c726be261ba021dbd50dfba"
+}

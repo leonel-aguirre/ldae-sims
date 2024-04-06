@@ -1,0 +1,32 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "SELECT * FROM specializations;",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "specialization_code",
+        "type_info": "Varchar"
+      },
+      {
+        "ordinal": 1,
+        "name": "display_name",
+        "type_info": "Varchar"
+      },
+      {
+        "ordinal": 2,
+        "name": "program_code",
+        "type_info": "Varchar"
+      }
+    ],
+    "parameters": {
+      "Left": []
+    },
+    "nullable": [
+      false,
+      false,
+      false
+    ]
+  },
+  "hash": "3544b37750cd5d64e54f83b89265c52564001339b86187f0fdccfdf0c2ce6fb7"
+}
