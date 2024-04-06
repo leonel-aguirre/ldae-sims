@@ -14,3 +14,9 @@ sqlx = { version = "0.7.4", features = ["postgres", "runtime-async-std"] }
 tokio = { version = "1.36.0", features = ["full"] }
 tower = "0.4.13"
 tower-http = { version = "0.5.2", features = ["fs"] }
+
+[package.metadata.scripts]
+build-docker-image = "docker compose build"
+run-dockerized-app = "docker compose up -d"
+run-databse-service = "docker compose up postgres -d"
+run-app-locally = "env DB_HOST='0.0.0.0' cargo run"

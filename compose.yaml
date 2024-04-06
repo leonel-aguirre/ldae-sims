@@ -1,6 +1,7 @@
 version: "3"
 services:
   server:
+    image: leonelaguirre/ldae-sims-server:latest
     build:
       context: .
       target: final
