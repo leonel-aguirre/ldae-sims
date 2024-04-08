@@ -1,0 +1,14 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "DELETE FROM courses WHERE course_code = $1",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Text"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "5d3a5b0d2218d2ab8beb4ea4d007c03b460560a27fd1ce753ae6301017c7f88a"
+}
