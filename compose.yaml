@@ -1,6 +1,6 @@
 version: "3"
 services:
-  server:
+  api:
     image: leonelaguirre/ldae-sims-server:latest
     build:
       context: .
