@@ -1,0 +1,50 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "UPDATE programs SET display_name = $1, program_type = $2, duration_type = $3, duration = $4 WHERE program_code = $5 RETURNING *",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "program_code",
+        "type_info": "Varchar"
+      },
+      {
+        "ordinal": 1,
+        "name": "display_name",
+        "type_info": "Varchar"
+      },
+      {
+        "ordinal": 2,
+        "name": "program_type",
+        "type_info": "Varchar"
+      },
+      {
+        "ordinal": 3,
+        "name": "duration_type",
+        "type_info": "Varchar"
+      },
+      {
+        "ordinal": 4,
+        "name": "duration",
+        "type_info": "Int4"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Varchar",
+        "Varchar",
+        "Varchar",
+        "Int4",
+        "Text"
+      ]
+    },
+    "nullable": [
+      false,
+      false,
+      false,
+      false,
+      false
+    ]
+  },
+  "hash": "bcb9c0568cda1bfa1ababcb5d7cb35b0fd2782692a58194eae358dddae8e67c7"
+}

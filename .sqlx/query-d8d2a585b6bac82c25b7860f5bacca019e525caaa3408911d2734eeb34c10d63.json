@@ -1,0 +1,44 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "SELECT * FROM programs;",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "program_code",
+        "type_info": "Varchar"
+      },
+      {
+        "ordinal": 1,
+        "name": "display_name",
+        "type_info": "Varchar"
+      },
+      {
+        "ordinal": 2,
+        "name": "program_type",
+        "type_info": "Varchar"
+      },
+      {
+        "ordinal": 3,
+        "name": "duration_type",
+        "type_info": "Varchar"
+      },
+      {
+        "ordinal": 4,
+        "name": "duration",
+        "type_info": "Int4"
+      }
+    ],
+    "parameters": {
+      "Left": []
+    },
+    "nullable": [
+      false,
+      false,
+      false,
+      false,
+      false
+    ]
+  },
+  "hash": "d8d2a585b6bac82c25b7860f5bacca019e525caaa3408911d2734eeb34c10d63"
+}
