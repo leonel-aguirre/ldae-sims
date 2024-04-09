@@ -18,5 +18,6 @@ tower-http = { version = "0.5.2", features = ["fs"] }
 [package.metadata.scripts]
 build-docker-image = "docker compose build"
 run-dockerized-app = "docker compose up -d"
-run-databse-service = "docker compose up postgres -d"
+run-database-service = "docker compose up postgres -d"
+run-database-migrations = "env DB_HOST='0.0.0.0' sqlx migrate run"
 run-app-locally = "env DB_HOST='0.0.0.0' cargo run"
