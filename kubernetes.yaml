@@ -1,0 +1,123 @@
+# Persistent Volume config.
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: postgres-pv-volume
+  labels:
+    type: local
+    app: postgres
+spec:
+  storageClassName: manual
+  capacity:
+    storage: 5Gi
+  accessModes:
+    - ReadWriteMany
+  hostPath:
+    path: "/mnt/data"
+---
+# Persistent Volume Claim config.
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: postgres-pv-claim
+  labels:
+    app: postgres
+spec:
+  storageClassName: manual
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 5Gi
+---
+# Stateful Set config.
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: postgres
+  labels:
+    app: postgres
+spec:
+  serviceName: postgres
+  replicas: 1
+  selector:
+    matchLabels:
+      app: postgres
+  template:
+    metadata:
+      labels:
+        app: postgres
+    spec:
+      containers:
+        - name: postgres
+          image: postgres:latest
+          imagePullPolicy: "IfNotPresent"
+          ports:
+            - containerPort: 5432
+          env:
+            - name: POSTGRES_USER 
+              value: admin
+            - name: POSTGRES_PASSWORD
+              value: password123
+            - name: POSTGRES_DB
+              value: rust_sqlx
+          volumeMounts:
+            - mountPath: /var/lib/postgresql/dataB
+              name: postgresdb
+      volumes:
+        - name: postgresdb
+          persistentVolumeClaim:
+            claimName: postgres-pv-claim
+---
+# Postgres Service config.
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres
+  labels:
+    app: postgres
+spec:
+  selector:
+    app: postgres
+  ports:
+    - protocol: TCP
+      port: 5432
+      targetPort: 5432
+---
+# Rust API Deployment config.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rust-deployment
+spec:
+  selector:
+    matchLabels:
+      app: rust-api
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        app: rust-api
+    spec:
+      containers:
+      - name: rust-be-server
+        image: leonelaguirre/ldae-sims-server:latest
+        imagePullPolicy: "Always"
+        env:
+        - name: DATABASE_URL
+          value: "postgresql://admin:password123@postgres-0.postgres:5432/rust_sqlx"
+---
+# Rust API Service config.
+apiVersion: v1
+kind: Service
+metadata:
+  name: rust-service
+spec:  
+  selector:
+    app: rust-api
+  type: NodePort 
+  ports:
+  - port: 3000
+    protocol: TCP
+
+# Ingress config can be found in ./ingress.yaml file.
