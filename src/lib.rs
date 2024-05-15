@@ -16,6 +16,8 @@ pub mod specialization_model;
 #[path = "./models/course-model.rs"]
 pub mod course_model;
 
+#[path = "./handlers/base-handlers.rs"]
+pub mod base_handlers;
 #[path = "./handlers/program-handlers.rs"]
 pub mod program_handlers;
 #[path = "./handlers/specialization-handlers.rs"]
@@ -23,6 +25,9 @@ pub mod specialization_handlers;
 
 #[path = "./handlers/course-handlers.rs"]
 pub mod course_handlers;
+
+#[path = "./routes/base-routes.rs"]
+pub mod base_routes;
 
 #[path = "./routes/program-routes.rs"]
 pub mod program_routes;

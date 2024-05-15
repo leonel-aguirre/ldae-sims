@@ -15,13 +15,13 @@ ARG TARGETPLATFORM
 
 RUN xx-apk add --no-cache musl-dev gcc
 
-RUN wget https://github.com/ansrivas/sqlx/releases/download/v0.5.5/sqlx && chmod +x sqlx
+COPY ./Cargo.toml .
+COPY ./Cargo.lock .
+COPY ./src ./src
+COPY ./migrations ./migrations
+COPY ./.sqlx ./.sqlx
 
-RUN --mount=type=bind,source=src,target=src \
-    --mount=type=bind,source=Cargo.toml,target=Cargo.toml \
-    --mount=type=bind,source=Cargo.lock,target=Cargo.lock \
-    --mount=type=bind,source=.sqlx,target=.sqlx \
-    --mount=type=cache,target=/app/target/,id=rust-cache-${APP_NAME}-${TARGETPLATFORM} \
+RUN --mount=type=cache,target=/app/target/,id=rust-cache-${APP_NAME}-${TARGETPLATFORM} \
     --mount=type=cache,target=/usr/local/cargo/git/db \
     --mount=type=cache,target=/usr/local/cargo/registry/ \
 xx-cargo build --locked --release --target-dir ./target && \
@@ -42,11 +42,9 @@ RUN adduser \
 USER appuser
 
 COPY --from=build /bin/server /bin/
-COPY --from=build /app/sqlx /usr/local/bin/sqlx
-COPY migrations /opt/src/migrations
 
 WORKDIR /opt/src
 
 EXPOSE 3000
 
-CMD sqlx migrate run;/bin/server
+CMD /bin/server

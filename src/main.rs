@@ -3,8 +3,8 @@ use std::sync::Arc;
 use axum::Router;
 use dotenv::dotenv;
 use ldae_sims::{
-    course_routes::course_routes, program_routes::program_routes, shared::AppState,
-    specialization_routes::specialization_routes,
+    base_routes::base_routes, course_routes::course_routes, program_routes::program_routes,
+    shared::AppState, specialization_routes::specialization_routes,
 };
 use sqlx::postgres::PgPoolOptions;
 
@@ -21,6 +21,7 @@ async fn main() {
     {
         Ok(pool) => {
             println!("✅ Connection to the database is successful!");
+
             pool
         }
         Err(err) => {
@@ -29,13 +30,21 @@ async fn main() {
         }
     };
 
+    sqlx::migrate!("./migrations")
+        .run(&pool)
+        .await
+        .expect("🔥 could not run SQLx migrations");
+
     let app_state = Arc::new(AppState { db: pool.clone() });
 
     let all_routes = program_routes()
         .merge(specialization_routes())
         .merge(course_routes());
 
-    let router = Router::new().nest("/api", all_routes).with_state(app_state);
+    let router = Router::new()
+        .merge(base_routes())
+        .nest("/api", all_routes)
+        .with_state(app_state);
 
     println!("🚀 Server started successfully");
     let listener = tokio::net::TcpListener::bind("0.0.0.0:3000").await.unwrap();
